@@ -11,7 +11,7 @@ const margin = {
 };
 
 const App = () => (
-  <div>
+  <div style={{ backgroundColor: "white", borderRadius: 4 }}>
     <Graph width={800} height={480} margin={margin} />
   </div>
 );

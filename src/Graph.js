@@ -101,7 +101,7 @@ class Graph extends React.Component {
   }
 
   componentWillMount = () => {
-    this.fetchCryptoData("BTC");
+    // this.fetchCryptoData("BTC");
   };
 
   fetchCryptoData = cur => {
