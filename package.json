@@ -1,0 +1,43 @@
+{
+  "name": "graph",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@vx/axis": "^0.0.190",
+    "@vx/event": "^0.0.189",
+    "@vx/gradient": "^0.0.189",
+    "@vx/grid": "^0.0.190",
+    "@vx/group": "0.0.190",
+    "@vx/legend": "0.0.190",
+    "@vx/mock-data": "^0.0.189",
+    "@vx/responsive": "0.0.189",
+    "@vx/scale": "0.0.190",
+    "@vx/shape": "0.0.190",
+    "@vx/tooltip": "^0.0.189",
+    "eslint-plugin-react-hooks": "^1.7.0",
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0",
+    "react-scripts": "3.1.0"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
