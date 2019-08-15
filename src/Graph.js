@@ -54,24 +54,6 @@ const ordinalColorScale = scaleOrdinal({
   range: ["magenta", "blue"]
 });
 
-/**
- * During mouse move events, we need to calculate
- * the nearest data point available to us.
- * Below x and y are the coordinates of the mouse.
- */
-// const dataPoints = series.map(d => {
-//   // Grab a date value for where the mouse x coordinate is
-//   const xDomain = this.xScale.invert(x - margin.left);
-//   // use d3-array/bisector to get the closest data value to this date, xDomain
-//   const bisectDate = bisector(d => new Date(d.date)).left;
-//   const index = bisectDate(d, xDomain, 1);
-//   return d[index - 1];
-// });
-// const tooltipLeft = x - margin.left;
-// const tooltipTop = y - margin.top;
-// const tooltipData = dataPoints;
-// const dataPointX = xScale(new Date(dataPoints[0].date));
-
 class Graph extends React.Component {
   constructor(props) {
     super(props);
@@ -100,6 +82,13 @@ class Graph extends React.Component {
       circlePositions: [null, null, null]
     };
   }
+
+  getOrdinalScaleFromLines = lines => {
+    return scaleOrdinal({
+      domain: lines.map(line => line.name),
+      range: lines.map(line => line.color)
+    });
+  };
 
   componentWillMount = () => {
     // this.fetchCryptoData("BTC");
@@ -214,7 +203,7 @@ class Graph extends React.Component {
     return (
       <div style={{ backgroundColor: "#fff" }}>
         <LegendOrdinal
-          scale={ordinalColorScale}
+          scale={this.getOrdinalScaleFromLines(this.state.lines)}
           labelFormat={label => `${label}`}
         >
           {labels => {
@@ -311,8 +300,6 @@ class Graph extends React.Component {
                     strokeDasharray="0"
                   />
                   {this.state.lines.map((line, i) => {
-                    console.log(this.state.circlePositions);
-
                     return (
                       <circle
                         cx={tooltipLeft}
@@ -320,7 +307,7 @@ class Graph extends React.Component {
                         r={4}
                         fill={this.state.lines[i].color}
                         stroke="white"
-                        strokeWidth={3}
+                        strokeWidth={2}
                         style={{ pointerEvents: "none" }}
                       />
                     );
