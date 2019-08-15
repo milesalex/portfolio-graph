@@ -27,7 +27,7 @@ const xSelector = d => new Date(d.date);
 const ySelector = d => d.close;
 
 const bisectDate = bisector(xSelector).left;
-const formatDate = timeFormat('%B %d, %Y');
+const formatDate = timeFormat('%b %d, %Y');
 
 // responsive utils for axis ticks
 function numTicksForHeight(height) {
@@ -81,25 +81,6 @@ class Graph extends React.Component {
       domain: lines.map(line => line.name),
       range: lines.map(line => line.color)
     });
-  };
-
-  componentWillMount = () => {
-    // this.fetchCryptoData("BTC");
-  };
-
-  fetchCryptoData = cur => {
-    const url = `https://min-api.cryptocompare.com/data/histoday?fsym=${cur}&tsym=USD&limit=365`;
-    fetch(url)
-      .then(response => response.json())
-      .then(data => {
-        const d = data.Data.map(item => ({
-          close: item.close,
-          date: new Date(item.time * 100)
-        }));
-        // console.log(d);
-        return d;
-        // this.setState({ lines: [d] });
-      });
   };
 
   newLine = data => {
@@ -160,6 +141,13 @@ class Graph extends React.Component {
     });
   };
 
+  formatPrice = price => {
+    return price.toLocaleString('en-US', {
+      style: 'currency',
+      currency: 'USD'
+    });
+  };
+
   render() {
     const {
       margin,
@@ -212,11 +200,11 @@ class Graph extends React.Component {
                     }}
                   >
                     {labels.map((label, i) => {
-                      const size = 12;
+                      const size = 8;
                       return (
                         <LegendItem
                           key={`legend-quantile-${i}`}
-                          margin={'0 5px'}
+                          margin={'0 0 0 20px'}
                           onClick={event => {
                             alert(`clicked: ${JSON.stringify(label)}`);
                           }}
@@ -299,6 +287,7 @@ class Graph extends React.Component {
                   {this.state.lines.map((line, i) => {
                     return (
                       <circle
+                        key={`dot-${i}`}
                         cx={tooltipLeft}
                         cy={this.state.circlePositions[i]}
                         r={4}
@@ -329,7 +318,7 @@ class Graph extends React.Component {
                 textAnchor: 'start',
                 fontSize: 12,
                 fontFamily: 'Arial',
-                dx: '-0.25em',
+                // dx: '-0.95em',
                 dy: '0.25em'
               })}
               tickComponent={({ formattedValue, ...tickProps }) => (
@@ -343,33 +332,68 @@ class Graph extends React.Component {
               numTicks={numTicksForWidth(width)}
               hideTicks
               stroke="#e0e0e0"
-              // label="Time"
+              tickLabelProps={(value, index) => ({
+                fill: '#000',
+                textAnchor: 'middle',
+                fontSize: 12,
+                fontFamily: 'Arial'
+              })}
             />
           </Group>
         </svg>
         {tooltipData && (
           <div>
             <TooltipWithBounds
-              top={height}
-              left={tooltipLeft + 30}
+              key={Math.random()}
+              top={margin.top + 50}
+              left={tooltipLeft + 5}
               style={{
                 backgroundColor: 'rgba(255, 255, 255, 0.8)',
                 color: '#000',
                 fontFamily: 'Arial',
                 fontSize: '12px',
-                border: '1px solid black'
+                border: '1px solid black',
+                minWidth: 120,
+                padding: '5px 8px'
               }}
             >
-              <p style={{ fontWeight: 600, margin: 0, marginBottom: '5px' }}>
-                {formatDate(new Date(tooltipData[0].date))}
-              </p>
-              {tooltipData.map((data, i) => {
-                return (
-                  <p style={{ margin: 0 }}>
-                    {`${this.state.lines[i].name} · $${data.close}`}
-                  </p>
-                );
-              })}
+              <table style={{ minWidth: 120 }}>
+                <tbody>
+                  <tr>
+                    <th colSpan={2} align="left">
+                      {formatDate(new Date(tooltipData[0].date))}
+                    </th>
+                  </tr>
+
+                  {tooltipData.map((data, i) => {
+                    const size = 8;
+                    const padding = 4;
+                    return (
+                      <tr>
+                        <td style={{ paddingTop: padding }}>
+                          <svg width={size} height={size}>
+                            <circle
+                              fill={this.state.lines[i].color}
+                              r={size / 2}
+                              cx={size / 2}
+                              cy={size / 2}
+                            />
+                          </svg>
+                          <span style={{ marginLeft: 5 }}>
+                            {this.state.lines[i].name}
+                          </span>
+                        </td>
+                        <td
+                          style={{ paddingTop: padding, color: 'gray' }}
+                          align="left"
+                        >
+                          {this.formatPrice(data.close)}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
             </TooltipWithBounds>
           </div>
         )}

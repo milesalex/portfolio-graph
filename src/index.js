@@ -16,7 +16,8 @@ const App = () => (
     style={{
       backgroundColor: 'white',
       borderRadius: 4,
-      padding: '10px 30px 30px'
+      padding: '10px 30px 30px',
+      overflow: 'hidden'
     }}
   >
     <ParentSize>
