@@ -96,7 +96,8 @@ class Graph extends React.Component {
           name: "Tesla",
           color: "blue"
         }
-      ]
+      ],
+      circlePositions: [null, null, null]
     };
   }
 
@@ -148,46 +149,15 @@ class Graph extends React.Component {
   handleTooltip = ({ event, xSelector, xScale, yScale }) => {
     const { showTooltip } = this.props;
     const { data } = this.state;
-    const { x } = localPoint(event);
-    // console.log(this.props.margin);
-    const x0 = xScale.invert(x - this.props.margin.left);
-    const index = bisectDate(data, x0, 1);
+    let dataPoints = [];
+    let circlePositions = [];
 
-    const d0 = data[index - 1];
-    const d1 = data[index];
-    let d = d0;
-    if (d1 && d1.date) {
-      d = x0 - xSelector(d0) > xSelector(d1) - x0 ? d1 : d0;
-    }
-
-    showTooltip({
-      tooltipData: d,
-      tooltipLeft: xScale(xSelector(d)),
-      tooltipTop: yScale(ySelector(d))
-    });
-  };
-
-  getXMax(props = this.props) {
-    const { margin } = props;
-    return props.parentWidth - margin.left - margin.right;
-  }
-
-  getYMax(props = this.props) {
-    const { margin } = props;
-    return props.parentWidth * aspectRatio - margin.top - margin.bottom;
-  }
-
-  showTooltipAt = ({ event, xSelector, xScale, yScale }) => {
-    const { margin, showTooltip } = this.props;
-    const { data } = this.state;
-
-    const { x } = localPoint(event);
-
-    const positionY = y - margin.top;
-
-    const dataPoints = this.state.lines.map(line => {
+    for (let i = 0; i < this.state.lines.length; i++) {
+      const line = this.state.lines[i];
+      const { x } = localPoint(event);
+      // console.log(this.props.margin);
       const x0 = xScale.invert(x - this.props.margin.left);
-      const index = bisectDate(data, x0, 1);
+      const index = bisectDate(line.data, x0, 1);
 
       const d0 = line.data[index - 1];
       const d1 = line.data[index];
@@ -195,45 +165,17 @@ class Graph extends React.Component {
       if (d1 && d1.date) {
         d = x0 - xSelector(d0) > xSelector(d1) - x0 ? d1 : d0;
       }
+      dataPoints.push(d);
 
-      return d;
-    });
+      const y = yScale(ySelector(d));
+      circlePositions.push(y);
+    }
 
-    // console.log(this.props.margin);
+    this.setState({ circlePositions });
 
-    const xOffset = 18;
-    const yOffset = 18;
-
-    const positionXWithOffset = positionX + xOffset;
-    const pastRightSide = positionXWithOffset + this.tooltipWidth > xMax;
-    const tooltipLeft = pastRightSide
-      ? positionX - this.tooltipWidth - xOffset
-      : positionXWithOffset;
-
-    const tooltipTop = positionY - yOffset;
-
-    // this.setState({
-    //   tooltipOpen: true,
-    //   tooltipData: dataPoints,
-    //   tooltipLeft,
-    //   tooltipTop,
-    //   vertLineLeft: this.xScale(new Date(dataPoints[0].date))
-    // });
-
-    // showTooltip({
-    //   tooltipData: dataPoints,
-    // tooltipLeft: xScale(xSelector(d));
-    // tooltipTop: yScale(ySelector(d));
-    // });
-
-    this.setState({
-      tooltipOpen: true,
+    showTooltip({
       tooltipData: dataPoints,
-      tooltipLeft: xScale(xSelector(d)),
-      tooltipTop: yScale(ySelector(d))
-      // tooltipLeft,
-      // tooltipTop,
-      // vertLineLeft: this.xScale(new Date(dataPoints[0].date))
+      tooltipLeft: xScale(xSelector(dataPoints[0]))
     });
   };
 
@@ -368,17 +310,21 @@ class Graph extends React.Component {
                     style={{ pointerEvents: "none" }}
                     strokeDasharray="0"
                   />
-                  {this.state.lines.map((line, i) => (
-                    <circle
-                      cx={tooltipLeft}
-                      cy={tooltipTop}
-                      r={4}
-                      fill="magenta"
-                      stroke="white"
-                      strokeWidth={3}
-                      style={{ pointerEvents: "none" }}
-                    />
-                  ))}
+                  {this.state.lines.map((line, i) => {
+                    console.log(this.state.circlePositions);
+
+                    return (
+                      <circle
+                        cx={tooltipLeft}
+                        cy={this.state.circlePositions[i]}
+                        r={4}
+                        fill={this.state.lines[i].color}
+                        stroke="white"
+                        strokeWidth={3}
+                        style={{ pointerEvents: "none" }}
+                      />
+                    );
+                  })}
                 </g>
               </React.Fragment>
             )}
