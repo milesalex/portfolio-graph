@@ -1,16 +1,16 @@
-import React from "react";
-import { GridRows } from "@vx/grid";
-import { Group } from "@vx/group";
-import { curveBasis } from "@vx/curve";
+import React from 'react';
+import { GridRows } from '@vx/grid';
+import { Group } from '@vx/group';
+import { curveBasis } from '@vx/curve';
 // import { GradientOrangeRed } from "@vx/gradient";
-import { genDateValue, appleStock } from "@vx/mock-data";
-import { AxisLeft, AxisBottom } from "@vx/axis";
-import { Area, LinePath, Line, Bar } from "@vx/shape";
-import { scaleTime, scaleLinear, scaleOrdinal } from "@vx/scale";
-import { extent, max, bisector } from "d3-array";
-import { withTooltip, Tooltip, TooltipWithBounds } from "@vx/tooltip";
-import { localPoint } from "@vx/event";
-import { timeFormat } from "d3-time-format";
+import { genDateValue, appleStock } from '@vx/mock-data';
+import { AxisLeft, AxisBottom } from '@vx/axis';
+import { Area, LinePath, Line, Bar } from '@vx/shape';
+import { scaleTime, scaleLinear, scaleOrdinal } from '@vx/scale';
+import { extent, max, bisector } from 'd3-array';
+import { withTooltip, Tooltip, TooltipWithBounds } from '@vx/tooltip';
+import { localPoint } from '@vx/event';
+import { timeFormat } from 'd3-time-format';
 import {
   Legend,
   LegendLinear,
@@ -21,7 +21,7 @@ import {
   LegendItem,
   LegendLabel,
   Circle
-} from "@vx/legend";
+} from '@vx/legend';
 
 // Tooltip
 // https://github.com/hshoff/vx/issues/44
@@ -34,7 +34,7 @@ const xSelector = d => new Date(d.date);
 const ySelector = d => d.close;
 
 const bisectDate = bisector(xSelector).left;
-const formatDate = timeFormat("%B %d, %Y");
+const formatDate = timeFormat('%B %d, %Y');
 
 // responsive utils for axis ticks
 function numTicksForHeight(height) {
@@ -50,8 +50,8 @@ function numTicksForWidth(width) {
 }
 
 const ordinalColorScale = scaleOrdinal({
-  domain: ["My Portfolio", "Bitcoin"],
-  range: ["magenta", "blue"]
+  domain: ['My Portfolio', 'Bitcoin'],
+  range: ['magenta', 'blue']
 });
 
 class Graph extends React.Component {
@@ -65,18 +65,18 @@ class Graph extends React.Component {
       lines: [
         {
           data: appleStock,
-          name: "Apple",
-          color: "green"
+          name: 'Apple',
+          color: 'green'
         },
         {
           data: one,
-          name: "Bitcoin",
-          color: "magenta"
+          name: 'Bitcoin',
+          color: 'magenta'
         },
         {
           data: two,
-          name: "Tesla",
-          color: "blue"
+          name: 'Tesla',
+          color: 'blue'
         }
       ],
       circlePositions: [null, null, null]
@@ -201,49 +201,56 @@ class Graph extends React.Component {
     });
 
     return (
-      <div style={{ backgroundColor: "#fff" }}>
-        <LegendOrdinal
-          scale={this.getOrdinalScaleFromLines(this.state.lines)}
-          labelFormat={label => `${label}`}
-        >
-          {labels => {
-            return (
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  fontFamily: "Arial",
-                  fontSize: 12
-                }}
-              >
-                {labels.map((label, i) => {
-                  const size = 12;
-                  return (
-                    <LegendItem
-                      key={`legend-quantile-${i}`}
-                      margin={"0 5px"}
-                      onClick={event => {
-                        alert(`clicked: ${JSON.stringify(label)}`);
-                      }}
-                    >
-                      <svg width={size} height={size}>
-                        <circle
-                          fill={label.value}
-                          r={size / 2}
-                          cx={size / 2}
-                          cy={size / 2}
-                        />
-                      </svg>
-                      <LegendLabel align={"left"} margin={"0 0 0 4px"}>
-                        {label.text}
-                      </LegendLabel>
-                    </LegendItem>
-                  );
-                })}
-              </div>
-            );
-          }}
-        </LegendOrdinal>
+      <div style={{ backgroundColor: '#fff' }}>
+        <div>
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <h3 style={{ fontFamily: 'Arial', fontWeight: 400 }}>
+              Performance
+            </h3>
+            <LegendOrdinal
+              scale={this.getOrdinalScaleFromLines(this.state.lines)}
+              labelFormat={label => `${label}`}
+            >
+              {labels => {
+                return (
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'row',
+                      fontFamily: 'Arial',
+                      fontSize: 12
+                    }}
+                  >
+                    {labels.map((label, i) => {
+                      const size = 12;
+                      return (
+                        <LegendItem
+                          key={`legend-quantile-${i}`}
+                          margin={'0 5px'}
+                          onClick={event => {
+                            alert(`clicked: ${JSON.stringify(label)}`);
+                          }}
+                        >
+                          <svg width={size} height={size}>
+                            <circle
+                              fill={label.value}
+                              r={size / 2}
+                              cx={size / 2}
+                              cy={size / 2}
+                            />
+                          </svg>
+                          <LegendLabel align={'left'} margin={'0 0 0 4px'}>
+                            {label.text}
+                          </LegendLabel>
+                        </LegendItem>
+                      );
+                    })}
+                  </div>
+                );
+              }}
+            </LegendOrdinal>
+          </div>
+        </div>
         <svg width={width} height={height}>
           <GridRows
             top={margin.top}
@@ -262,7 +269,7 @@ class Graph extends React.Component {
                   x={d => xScale(xSelector(d))}
                   y={d => yScale(ySelector(d))}
                   stroke={
-                    this.state.lines.map(item => item.color)[i] || "magenta"
+                    this.state.lines.map(item => item.color)[i] || 'magenta'
                   }
                   strokeWidth={1}
                   curve={curveBasis}
@@ -296,7 +303,7 @@ class Graph extends React.Component {
                     to={{ x: tooltipLeft, y: yMax }}
                     stroke="#e0e0e0"
                     strokeWidth={1}
-                    style={{ pointerEvents: "none" }}
+                    style={{ pointerEvents: 'none' }}
                     strokeDasharray="0"
                   />
                   {this.state.lines.map((line, i) => {
@@ -308,7 +315,7 @@ class Graph extends React.Component {
                         fill={this.state.lines[i].color}
                         stroke="white"
                         strokeWidth={2}
-                        style={{ pointerEvents: "none" }}
+                        style={{ pointerEvents: 'none' }}
                       />
                     );
                   })}
@@ -326,20 +333,20 @@ class Graph extends React.Component {
               hideTicks
               numTicks={numTicksForHeight(height)}
               labelProps={{
-                fill: "#8e205f",
-                textAnchor: "middle",
+                fill: '#8e205f',
+                textAnchor: 'middle',
                 fontSize: 12,
-                fontFamily: "Arial"
+                fontFamily: 'Arial'
               }}
               stroke="#000"
               tickStroke="#000"
               tickLabelProps={(value, index) => ({
-                fill: "#000",
-                textAnchor: "end",
+                fill: '#000',
+                textAnchor: 'end',
                 fontSize: 10,
-                fontFamily: "Arial",
-                dx: "-0.25em",
-                dy: "0.25em"
+                fontFamily: 'Arial',
+                dx: '-0.25em',
+                dy: '0.25em'
               })}
               tickComponent={({ formattedValue, ...tickProps }) => (
                 <text {...tickProps}>${formattedValue}</text>
@@ -362,14 +369,14 @@ class Graph extends React.Component {
               top={height}
               left={tooltipLeft + 30}
               style={{
-                backgroundColor: "rgba(255, 255, 255, 0.8)",
-                color: "#000",
-                fontFamily: "Arial",
-                fontSize: "12px",
-                border: "1px solid black"
+                backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                color: '#000',
+                fontFamily: 'Arial',
+                fontSize: '12px',
+                border: '1px solid black'
               }}
             >
-              <p style={{ fontWeight: 600, margin: 0, marginBottom: "5px" }}>
+              <p style={{ fontWeight: 600, margin: 0, marginBottom: '5px' }}>
                 {formatDate(xSelector(tooltipData))}
               </p>
               <p style={{ margin: 0 }}>{`Apple · $${ySelector(
