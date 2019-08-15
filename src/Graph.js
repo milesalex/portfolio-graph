@@ -2,9 +2,8 @@ import React from 'react';
 import { GridRows } from '@vx/grid';
 import { Group } from '@vx/group';
 import { curveBasis } from '@vx/curve';
-// import { GradientOrangeRed } from "@vx/gradient";
 import { genDateValue, appleStock } from '@vx/mock-data';
-import { AxisLeft, AxisBottom } from '@vx/axis';
+import { AxisLeft, AxisBottom, AxisRight } from '@vx/axis';
 import { Area, LinePath, Line, Bar } from '@vx/shape';
 import { scaleTime, scaleLinear, scaleOrdinal } from '@vx/scale';
 import { extent, max, bisector } from 'd3-array';
@@ -22,12 +21,6 @@ import {
   LegendLabel,
   Circle
 } from '@vx/legend';
-
-// Tooltip
-// https://github.com/hshoff/vx/issues/44
-// https://github.com/DylanMoz/dylanmoz.github.io/blob/source/src/pages/trello/TrelloGraph.js
-
-// const data = appleStock;
 
 // accessors
 const xSelector = d => new Date(d.date);
@@ -137,7 +130,6 @@ class Graph extends React.Component {
 
   handleTooltip = ({ event, xSelector, xScale, yScale }) => {
     const { showTooltip } = this.props;
-    const { data } = this.state;
     let dataPoints = [];
     let circlePositions = [];
 
@@ -181,8 +173,6 @@ class Graph extends React.Component {
     } = this.props;
 
     const { lines } = this.state;
-
-    // console.log(this.props);
 
     // bounds
     const xMax = width - margin.left - margin.right;
@@ -278,7 +268,7 @@ class Graph extends React.Component {
                   x={0}
                   y={0}
                   width={width}
-                  height={height}
+                  height={height - margin.bottom}
                   fill="transparent"
                   data={line.data}
                   onMouseMove={event =>
@@ -324,26 +314,20 @@ class Graph extends React.Component {
             )}
           </Group>
           <Group left={margin.left}>
-            <AxisLeft
+            <AxisRight
               top={margin.top}
-              left={0}
+              left={width - margin.right}
               scale={yScale}
               hideZero
               hideAxisLine
               hideTicks
               numTicks={numTicksForHeight(height)}
-              labelProps={{
-                fill: '#8e205f',
-                textAnchor: 'middle',
-                fontSize: 12,
-                fontFamily: 'Arial'
-              }}
               stroke="#000"
               tickStroke="#000"
               tickLabelProps={(value, index) => ({
                 fill: '#000',
-                textAnchor: 'end',
-                fontSize: 10,
+                textAnchor: 'start',
+                fontSize: 12,
                 fontFamily: 'Arial',
                 dx: '-0.25em',
                 dy: '0.25em'
@@ -377,11 +361,15 @@ class Graph extends React.Component {
               }}
             >
               <p style={{ fontWeight: 600, margin: 0, marginBottom: '5px' }}>
-                {formatDate(xSelector(tooltipData))}
+                {formatDate(new Date(tooltipData[0].date))}
               </p>
-              <p style={{ margin: 0 }}>{`Apple · $${ySelector(
-                tooltipData
-              )}`}</p>
+              {tooltipData.map((data, i) => {
+                return (
+                  <p style={{ margin: 0 }}>
+                    {`${this.state.lines[i].name} · $${data.close}`}
+                  </p>
+                );
+              })}
             </TooltipWithBounds>
           </div>
         )}
