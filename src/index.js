@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import Graph from "./Graph";
+import { ParentSize } from "@vx/responsive";
 import "./styles.css";
 
 const margin = {
@@ -11,8 +12,10 @@ const margin = {
 };
 
 const App = () => (
-  <div style={{ backgroundColor: "white", borderRadius: 4 }}>
-    <Graph width={800} height={480} margin={margin} />
+  <div style={{ backgroundColor: "white", borderRadius: 4, padding: 30 }}>
+    <ParentSize>
+      {parent => <Graph width={parent.width} height={500} margin={margin} />}
+    </ParentSize>
   </div>
 );
 
